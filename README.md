@@ -50,20 +50,21 @@ This project management system is designed to help teams plan, execute, and coll
 Below are the core diagrams that describe the structure and behavior of the system.
 
 ### Class Diagram
-![Class Diagram](./public/class_diagramm.png)
+![Class Diagram](./public/class_diagramm.PNG)
 
 ### Use Case Diagram
-![Use Case Diagram](./public/use-case-diagram.png)
+![Use Case Diagram](./public/usecase_diagramm.PNG)
 
 ### Sequence Diagrams
 1. **Task Creation Sequence**
-   ![Task Creation Sequence](./public/sequence-diagram-task-creation.png)
+   ![Task Creation Sequence](./public/sequence_diagramm_1.PNG)
    
-2. **Real-Time Chat Sequence**
-   ![Real-Time Chat Sequence](./public/sequence-diagram-chat.png)
+2. **Authentification Sequence**
+   ![Real-Time auth Sequence](./public/sequence_diagramm_3.1.PNG)
+   ![Real-Time auth Sequence](./public/sequence_diagramm_3.2.PNG)
 
-3. **Conference Setup Sequence**
-   ![Conference Setup Sequence](./public/sequence-diagram-conference.png)
+4. **Registration Sequence**
+   ![registration Sequence](./public/sequence_diagramm_2.PNG)
 
 ---
 
