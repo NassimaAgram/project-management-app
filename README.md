@@ -57,13 +57,16 @@ Below are the core diagrams that describe the structure and behavior of the syst
 
 ### Sequence Diagrams
 1. **Task Creation Sequence**
+   
    ![Task Creation Sequence](./public/sequence_diagramm_1.PNG)
    
 2. **Authentification Sequence**
+   
    ![Real-Time auth Sequence](./public/sequence_diagramm_3.1.PNG)
    ![Real-Time auth Sequence](./public/sequence_diagramm_3.2.PNG)
 
-4. **Registration Sequence**
+3. **Registration Sequence**
+   
    ![registration Sequence](./public/sequence_diagramm_2.PNG)
 
 ---
@@ -119,33 +122,6 @@ We are using Jira to manage the project's tasks and progress. You can track the 
   4. Generate automated reports from project progress and task completion.
 
 For a detailed walkthrough, see the [User Guide](your-user-guide-link-here).
-
----
-
-## Contributing
-
-We welcome contributions to this project. To contribute:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Submit a pull request and describe your changes.
-
-Please see our [Contributing Guidelines](link-to-contributing.md) for more details.
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Contact
-
-For any questions or feedback, feel free to contact the project maintainers:
-
-- **Name 1**: [Email](mailto:email1@example.com)
-- **Name 2**: [Email](mailto:email2@example.com)
 
 ---
 
