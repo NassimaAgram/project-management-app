@@ -50,7 +50,7 @@ This project management system is designed to help teams plan, execute, and coll
 Below are the core diagrams that describe the structure and behavior of the system.
 
 ### Class Diagram
-![Class Diagram](./public/class-diagram.png)
+![Class Diagram](./public/class_diagramm.png)
 
 ### Use Case Diagram
 ![Use Case Diagram](./public/use-case-diagram.png)
