@@ -14,9 +14,6 @@ A comprehensive project management system that integrates task management, real-
 - [Jira Project Board](#jira-project-board)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ---
 
