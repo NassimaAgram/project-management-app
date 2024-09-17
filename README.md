@@ -72,7 +72,7 @@ Below are the core diagrams that describe the structure and behavior of the syst
 
 We are using Jira to manage the project's tasks and progress. You can track the latest updates and sprint plans via the following link:
 
-[Jira Project Board](your-jira-link-here)
+[Jira Project Board](https://0agram-nassima0.atlassian.net/browse/PMA)
 
 ---
 
