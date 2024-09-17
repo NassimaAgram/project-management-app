@@ -76,39 +76,21 @@ We are using Jira to manage the project's tasks and progress. You can track the 
 
 ---
 
+## Figma Design
+
+We are using figma to have the necessary mockup
+
+[Figma design](https://www.figma.com/design/nn0mG7qMiT74sVCz6tZF32/Project-Management-App?node-id=5-14&node-type=canvas&t=0TkWAtSM9e2VUz9R-0)
+
+---
+
 ## Installation
 
 ### Prerequisites
 - Node.js
-- MongoDB/PostgreSQL (or your preferred database)
-- Docker (optional for containerized deployments)
+- MongoDB
+- Docker 
 
-### Steps
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-repo/project-management-system.git
-    cd project-management-system
-    ```
-
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
-
-3. Configure environment variables:
-   - Add your database, API keys, and configuration details in `.env`.
-
-4. Run the application:
-    ```bash
-    npm start
-    ```
-
-5. Open your browser and navigate to:
-    ```
-    http://localhost:3000
-    ```
-
----
 
 ## Usage
 
