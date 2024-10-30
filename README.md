@@ -14,9 +14,6 @@ A comprehensive project management system that integrates task management, real-
 - [Jira Project Board](#jira-project-board)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ---
 
@@ -50,20 +47,24 @@ This project management system is designed to help teams plan, execute, and coll
 Below are the core diagrams that describe the structure and behavior of the system.
 
 ### Class Diagram
-![Class Diagram](./public/class-diagram.png)
+![Class Diagram](./public/class_diagramm.PNG)
 
 ### Use Case Diagram
-![Use Case Diagram](./public/use-case-diagram.png)
+![Use Case Diagram](./public/usecase_diagramm.PNG)
 
 ### Sequence Diagrams
 1. **Task Creation Sequence**
-   ![Task Creation Sequence](./public/sequence-diagram-task-creation.png)
    
-2. **Real-Time Chat Sequence**
-   ![Real-Time Chat Sequence](./public/sequence-diagram-chat.png)
+   ![Task Creation Sequence](./public/sequence_diagramm_1.PNG)
+   
+2. **Authentification Sequence**
+   
+   ![Real-Time auth Sequence](./public/sequence_diagramm_3.1.PNG)
+   ![Real-Time auth Sequence](./public/sequence_diagramm_3.2.PNG)
 
-3. **Conference Setup Sequence**
-   ![Conference Setup Sequence](./public/sequence-diagram-conference.png)
+3. **Registration Sequence**
+   
+   ![registration Sequence](./public/sequence_diagramm_2.PNG)
 
 ---
 
@@ -71,7 +72,15 @@ Below are the core diagrams that describe the structure and behavior of the syst
 
 We are using Jira to manage the project's tasks and progress. You can track the latest updates and sprint plans via the following link:
 
-[Jira Project Board](your-jira-link-here)
+[Jira Project Board](https://0agram-nassima0.atlassian.net/browse/PMA)
+
+---
+
+## Figma Design
+
+We are using figma to have the necessary mockup
+
+[Figma design](https://www.figma.com/design/nn0mG7qMiT74sVCz6tZF32/Project-Management-App?node-id=5-14&node-type=canvas&t=0TkWAtSM9e2VUz9R-0)
 
 ---
 
@@ -79,35 +88,9 @@ We are using Jira to manage the project's tasks and progress. You can track the 
 
 ### Prerequisites
 - Node.js
-- MongoDB/PostgreSQL (or your preferred database)
-- Docker (optional for containerized deployments)
+- MongoDB
+- Docker 
 
-### Steps
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-repo/project-management-system.git
-    cd project-management-system
-    ```
-
-2. Install dependencies:
-    ```bash
-    npm install
-    ```
-
-3. Configure environment variables:
-   - Add your database, API keys, and configuration details in `.env`.
-
-4. Run the application:
-    ```bash
-    npm start
-    ```
-
-5. Open your browser and navigate to:
-    ```
-    http://localhost:3000
-    ```
-
----
 
 ## Usage
 
@@ -118,33 +101,6 @@ We are using Jira to manage the project's tasks and progress. You can track the 
   4. Generate automated reports from project progress and task completion.
 
 For a detailed walkthrough, see the [User Guide](your-user-guide-link-here).
-
----
-
-## Contributing
-
-We welcome contributions to this project. To contribute:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Submit a pull request and describe your changes.
-
-Please see our [Contributing Guidelines](link-to-contributing.md) for more details.
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## Contact
-
-For any questions or feedback, feel free to contact the project maintainers:
-
-- **Name 1**: [Email](mailto:email1@example.com)
-- **Name 2**: [Email](mailto:email2@example.com)
 
 ---
 
