@@ -1,8 +1,5 @@
-import mongoose from "mongoose";
 import User from "../models/User.js";
-import bcrypt from "bcrypt";
 import { createError } from "../error.js";
-import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
 import Teams from "../models/Teams.js";
@@ -79,8 +76,9 @@ export const deleteTeam = async (req, res, next) => {
 export const getTeam = async (req, res, next) => {
     try {
         const team = await Teams.findById(req.params.id)
-            .populate("members.id", "_id name email img")
-            .populate({ path: "projects", populate: { path: "members.id", select: "_id name email" } });
+        .populate("members.id", "_id name email img")
+        .populate({ path: "projects", populate: { path: "members.id", select: "_id name email" } })
+        .exec();
 
         const userIsMember = team.members.some(member => member.id.id === req.user.id);
         if (!userIsMember) return next(createError(403, "You are not allowed to see this Team!"));
@@ -161,8 +159,7 @@ export const addTeamProject = async (req, res, next) => {
     try {
         const savedProject = await newProject.save();
         await updateUserTeams(user.id, savedProject._id);
-        await Teams.findByIdAndUpdate(req.params.id, { $push: { projects: savedProject._id } });
-
+        await Teams.findByIdAndUpdate(req.params.id, { $push: { projects: savedProject._id } }, { new: true });
         res.status(200).json(savedProject);
     } catch (err) {
         next(err);

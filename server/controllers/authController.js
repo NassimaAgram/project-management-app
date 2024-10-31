@@ -72,20 +72,20 @@ export const signup = async (req, res, next) => {
     }
 
     try {
-        const existingUser = await User.findOne({ email }).exec();
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(409).json({ message: "Email is already in use." });
         }
 
-        const salt = bcrypt.genSaltSync(10);
-        const hashedPassword = bcrypt.hashSync(password, salt);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt); // Use await here
         const newUser = new User({ ...req.body, password: hashedPassword });
 
         await newUser.save();
         const token = jwt.sign({ id: newUser._id }, process.env.JWT, { expiresIn: "1h" });
-        res.status(200).json({ token, user: newUser });
+        return res.status(200).json({ token, user: newUser }); // Make sure to return here
     } catch (err) {
-        next(err);
+        return next(err); // Return the next to propagate the error
     }
 };
 
