@@ -1,8 +1,5 @@
-import mongoose from "mongoose";
 import User from "../models/User.js";
-import bcrypt from "bcrypt";
 import { createError } from "../error.js";
-import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv';
 import Project from "../models/Project.js";

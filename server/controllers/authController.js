@@ -142,14 +142,24 @@ export const logout = (req, res) => {
 
 export const generateOTP = async (req, res, next) => {
     const { email, name, reason } = req.query;
-    const otp = await otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false, digits: true });
     
-    req.app.locals.OTP = otp; // Store OTP in the session
+    // Generate OTP and store in `req.app.locals`
+    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false, digits: true });
+    req.app.locals.OTP = otp;
 
+    // Create email data
     const emailData = createEmailTemplate(email, name, reason, otp);
 
-    sendEmail(emailData, res, next);
+    // Use Promise-based version for `sendEmail`
+    transporter.sendMail(emailData, (err) => {
+        if (err) {
+            req.app.locals.OTP = null; // Clear OTP if there’s an error
+            return next(err);
+        }
+        return res.status(200).json({ message: "OTP sent" });
+    });
 };
+
 
 export const verifyOTP = async (req, res, next) => {
     const { code } = req.query;

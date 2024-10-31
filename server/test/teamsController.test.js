@@ -28,7 +28,7 @@ describe("Team Controller", () => {
         res = { status: sinon.stub().returnsThis(), json: sinon.stub() };
         next = sinon.stub();
         sandbox = sinon.createSandbox();
-        
+
         // Mock nodemailer transporter
         sandbox.stub(nodemailer, 'createTransport').returns({
             sendMail: sandbox.stub().yields(null) // Simulate successful email sending
@@ -98,8 +98,6 @@ describe("Team Controller", () => {
         });
     });
 
-
-
     describe("inviteTeamMember", () => {
         it("should send an invitation email if user is authorized", async () => {
             req.params.id = 'teamId';
@@ -116,7 +114,6 @@ describe("Team Controller", () => {
     });
 
     describe("addTeamProject", () => {
-
         it("should return 404 if user is not found", async () => {
             sandbox.stub(User, 'findById').resolves(null);
 

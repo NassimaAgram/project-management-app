@@ -17,21 +17,17 @@ describe("Auth Controller", () => {
         res = { status: sinon.stub().returnsThis(), json: sinon.stub(), clearCookie: sinon.stub() };
         next = sinon.stub();
 
-        // Stub bcrypt functions
+        // Stubbing other dependencies as in your initial setup
         sinon.stub(bcrypt, "hashSync").returns("hashedPassword");
         sinon.stub(bcrypt, "compareSync").returns(true);
-        
-        // Stub JWT functions
         sinon.stub(jwt, "sign").returns("jsonwebtoken");
-
-        // Mock email transport
         sinon.stub(nodemailer, "createTransport").returns({
-            sendMail: sinon.stub().yields(null) // No error in sending email
+            sendMail: sinon.stub().yields(null) 
         });
     });
 
     afterEach(() => {
-        sinon.restore(); // Restore all stubs and mocks
+        sinon.restore();
     });
 
     describe("signup", () => {
@@ -114,5 +110,48 @@ describe("Auth Controller", () => {
             expect(next.called).to.be.true;
             expect(next.args[0][0].message).to.equal("Incorrect OTP");
         });
-    });    
-});    
+    });   
+    
+    describe("resetPassword", () => {
+        it("should reset the password successfully", async () => {
+            req.body = { email: "test@example.com", password: "NewPassword123" };
+            req.app.locals.resetSession = true;
+
+            sinon.stub(User, 'findOne').resolves({
+                _id: new mongoose.Types.ObjectId(),
+                email: req.body.email,
+                password: "hashedPassword"
+            });
+            const updateStub = sinon.stub(User, 'updateOne').resolves({ nModified: 1 });
+
+            await resetPassword(req, res, next);
+
+            expect(res.status.calledWith(200)).to.be.true;
+            expect(res.json.calledWith({ message: "Password reset successful" })).to.be.true;
+            expect(req.app.locals.resetSession).to.be.false;
+            updateStub.restore();
+        });
+
+        it("should return error if session expired", async () => {
+            req.body = { email: "test@example.com", password: "NewPassword123" };
+            req.app.locals.resetSession = false;
+
+            await resetPassword(req, res, next);
+
+            expect(res.status.calledWith(440)).to.be.true;
+            expect(res.json.calledWith({ message: "Session expired" })).to.be.true;
+        });
+
+        it("should return error if user is not found", async () => {
+            req.body = { email: "nonexistent@example.com", password: "NewPassword123" };
+            req.app.locals.resetSession = true;
+
+            sinon.stub(User, 'findOne').resolves(null);
+
+            await resetPassword(req, res, next);
+
+            expect(res.status.calledWith(404)).to.be.true;
+            expect(res.json.calledWith({ message: "User not found" })).to.be.true;
+        });
+    });
+}); 
