@@ -1,0 +1,8 @@
+{
+  "/auth/sign-in/page": "app/auth/sign-in/page.js",
+  "/(main)/home/page": "app/(main)/home/page.js",
+  "/auth/sign-up/page": "app/auth/sign-up/page.js",
+  "/auth/sign-up/sso-callback/page": "app/auth/sign-up/sso-callback/page.js",
+  "/auth/callback/page": "app/auth/callback/page.js",
+  "/(marketing)/page": "app/(marketing)/page.js"
+}

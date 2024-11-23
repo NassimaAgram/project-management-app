@@ -1,0 +1,53 @@
+services:
+  # Backend service
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://postgres:1234@localhost:5432/project_management?schema=public"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server:/app
+    command: ["npm", "run", "dev"]
+    env_file:
+      - ./server/.env   
+
+  # Frontend service
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: frontend
+    depends_on:
+      - server
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: "http://localhost:5000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+    command: ["npm", "run", "dev"]
+    env_file:
+      - ./client/.env.local 
+
+ # PostgreSQL database service
+  db:
+    image: postgres:17
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: project_management
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
+    driver: local
