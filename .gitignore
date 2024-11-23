@@ -1,17 +1,29 @@
-# dependencies
+# Dependencies
 /server/node_modules/
 /client/node_modules/
-/client/.next/
-/client/.env.local/
-/server/.env/
-/.pnp
-.pnp.js
 
-# testing
-/coverage
+# Build and cache files
+/client/.next/          # Next.js build directory
+/server/dist/           # Add server build directory if using TypeScript or bundling
+/build/                 # General production build folder
 
-/package.json
+# Environment files
+/client/.env.local      # Environment variables for the client
+/server/.env            # Environment variables for the server
 
-# production
-/build
+# Package manager files
+.pnp                    # Yarn Plug'n'Play
+.pnp.js                 # Yarn Plug'n'Play JS
 
+# Testing
+/coverage               # Jest or other testing coverage reports
+
+# Logs
+*.log                   # Log files
+npm-debug.log*          # NPM debug logs
+yarn-debug.log*         # Yarn debug logs
+yarn-error.log*         # Yarn error logs
+
+# OS-specific files
+.DS_Store               # macOS
+Thumbs.db               # Windows
