@@ -1,4 +1,4 @@
-import HomePage from "@/app/(main)/home/page";
+import HomePage from "@/app/(main)/dashboard/page";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 

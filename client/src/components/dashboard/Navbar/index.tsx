@@ -1,14 +1,17 @@
+"use client";
+
 import React from "react";
 import { Menu, Moon, Search, Settings, Sun, User } from "lucide-react";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/app/redux";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state";
 import { useGetAuthUserQuery } from "@/state/api";
-import { signOut } from "aws-amplify/auth";
+import { useClerk } from '@clerk/nextjs'
 import Image from "next/image";
 
-const Navbar = () => {
+const DashboardNavbar = () => {
   const dispatch = useAppDispatch();
+  const { signOut } = useClerk();
   const isSidebarCollapsed = useAppSelector(
     (state) => state.global.isSidebarCollapsed,
   );
@@ -17,7 +20,7 @@ const Navbar = () => {
   const { data: currentUser } = useGetAuthUserQuery({});
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await signOut({ redirectUrl: '/' }); // Call Clerk's signOut
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -103,4 +106,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default DashboardNavbar;

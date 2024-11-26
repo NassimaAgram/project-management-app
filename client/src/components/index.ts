@@ -18,6 +18,9 @@ import Reviews from "./mainpage/reviews";
 import CTA from "./mainpage/cta";
 import Footer from "./mainpage/footer";
 
+import DashboardNavbar from "./dashboard/Navbar";
+import DashboardSidebar from "./dashboard/Sidebar";
+
 export {
     Icons,
     Images,
@@ -36,4 +39,6 @@ export {
     Footer,
     SignInForm,
     SignUpForm,
+    DashboardNavbar,
+    DashboardSidebar,
 };

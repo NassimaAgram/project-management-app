@@ -1,21 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import ProjectHeader from "../ProjectHeader";
 import Board from "../BoardView";
 import List from "../ListView";
 import Timeline from "../TimelineView";
 import Table from "../TableView";
 import ModalNewTask from "@/components/ModalNewTask";
-import { PageProps } from ".next/types/app/layout";
 
-type Props = PageProps &  {
-  params: { id: string };
-};
+type Params = Promise<{ id: string }>;
 
-const Project = ({ params }: Props) => {
+const Project = (props: { params: Params }) => {
   
-  const id = params?.id;
+  const params = use(props.params);
+  const id = params.id;
   const [activeTab, setActiveTab] = useState("Board");
   const [isModalNewTaskOpen, setIsModalNewTaskOpen] = useState(false);
 

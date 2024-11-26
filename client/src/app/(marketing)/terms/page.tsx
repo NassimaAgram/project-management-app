@@ -15,3 +15,5 @@ const TermsPage = () => {
         </Background>
     )
 }
+
+export default TermsPage;
