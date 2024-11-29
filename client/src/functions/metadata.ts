@@ -17,7 +17,7 @@ interface MetadataProps {
 }
 
 export const generateMetadata = ({
-    title = `${process.env.NEXT_PUBLIC_APP_NAME} Efficient Project Management with ProjeXpert`,
+    title = `${process.env.NEXT_PUBLIC_APP_NAME} - Efficient Project Management`,
     description = "Optimize your project workflows with task management, collaboration tools, real-time tracking, and analytics. Increase productivity, streamline communication, and manage all your projects in one place.",
     image = "/thumbnail.png",
     icons = [

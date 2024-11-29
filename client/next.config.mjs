@@ -13,7 +13,13 @@ const nextConfig = {
         pathname: "/**",
       }
     ]
-  }
+  },
+  experimental: {
+    turbo: {
+      cache: true, // Enable Turbo caching
+    },
+  },
+  output: 'standalone',
 };
 
 export default nextConfig;

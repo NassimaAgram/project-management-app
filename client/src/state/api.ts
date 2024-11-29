@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; 
+import { auth, currentUser } from "@clerk/nextjs/server"; 
 
 export interface Project {
   id: number;
@@ -29,7 +29,7 @@ export interface User {
   username: string;
   email: string;
   profilePictureUrl?: string;
-  cognitoId?: string;
+  clerkId?: string; // Changed from cognitoId to clerkId
   teamId?: number;
 }
 
@@ -78,10 +78,16 @@ export const api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: async (headers) => {
-      const session = await fetchAuthSession();
-      const { accessToken } = session.tokens ?? {};
-      if (accessToken) {
-        headers.set("Authorization", `Bearer ${accessToken}`);
+      try {
+        // Fetch Clerk session and token
+        const session = await auth(); // Using Clerk's auth method
+        const token = await session.getToken(); 
+
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
+      } catch (error) {
+        console.error("Error fetching Clerk session:", error);
       }
       return headers;
     },
@@ -92,16 +98,18 @@ export const api = createApi({
     getAuthUser: build.query({
       queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
         try {
-          const user = await getCurrentUser();
-          const session = await fetchAuthSession();
+          // Fetch the current user details
+          const user = await currentUser(); // Make sure to call currentUser() as it's a function
+          const session = await auth(); // Get the Clerk session
           if (!session) throw new Error("No session found");
-          const { userSub } = session;
-          const { accessToken } = session.tokens ?? {};
-
-          const userDetailsResponse = await fetchWithBQ(`users/${userSub}`);
+          
+          const clerkId = user?.id;  
+          
+          // Fetch additional user details from your API
+          const userDetailsResponse = await fetchWithBQ(`users/${clerkId}`);
           const userDetails = userDetailsResponse.data as User;
 
-          return { data: { user, userSub, userDetails } };
+          return { data: { user, clerkId, userDetails } };
         } catch (error: any) {
           return { error: error.message || "Could not fetch user data" };
         }

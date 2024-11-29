@@ -149,7 +149,6 @@ const HomePage = () => {
               loading={tasksLoading}
               getRowClassName={() => "data-grid-row"}
               getCellClassName={() => "data-grid-cell"}
-              className={dataGridClassNames}
               sx={dataGridSxStyles(isDarkMode)}
             />
           </div>

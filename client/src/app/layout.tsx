@@ -2,7 +2,7 @@ import { inter, satoshi } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/functions";
 import { Toaster } from "@/components/ui/sonner";
-import { ClerkProvider } from "@clerk/nextjs";
+import { Providers } from "@/components";
 
 export const metadata = generateMetadata();
 
@@ -19,14 +19,14 @@ export default function RootLayout({
         satoshi.variable,
       )}
       >
-        <ClerkProvider>
+        <Providers>
           <Toaster
             richColors
             theme="dark"
             position="top-right"
           />
           {children}
-        </ClerkProvider>
+        </Providers>
       </body>
     </html>
   );
