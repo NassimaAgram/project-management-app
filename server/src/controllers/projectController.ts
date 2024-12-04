@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
-
 const prisma = new PrismaClient();
 
 export const getProjects = async (
@@ -10,7 +9,7 @@ export const getProjects = async (
 ): Promise<void> => {
   try {
     const projects = await prisma.project.findMany();
-    res.json(projects);
+    res.json({ data: projects }); // Wrap the projects in a 'data' object
   } catch (error: any) {
     res
       .status(500)
@@ -32,7 +31,7 @@ export const createProject = async (
         endDate,
       },
     });
-    res.status(201).json(newProject);
+    res.status(201).json({ data: newProject }); // Wrap the new project in a 'data' object
   } catch (error: any) {
     res
       .status(500)

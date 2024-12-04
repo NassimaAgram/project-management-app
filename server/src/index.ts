@@ -26,13 +26,27 @@ export const clerkClient = createClerkClient({
 
 dotenv.config();
 const app = express();
+
+// Disable caching middleware
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  res.set("Surrogate-Control", "no-store");
+  next();
+});
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*", // Allow all origins or specify your front-end domain
+    methods: ['GET', 'POST', 'PUT', 'PATCH'],
+  } 
+  ));
 app.use(clerkMiddleware());
 
 app.use("/projects", projectRoutes);

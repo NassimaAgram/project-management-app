@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 export const search = async (req: Request, res: Response): Promise<void> => {
   const { query } = req.query;
   try {
+    // Search for tasks
     const tasks = await prisma.task.findMany({
       where: {
         OR: [
@@ -15,6 +16,7 @@ export const search = async (req: Request, res: Response): Promise<void> => {
       },
     });
 
+    // Search for projects
     const projects = await prisma.project.findMany({
       where: {
         OR: [
@@ -24,6 +26,7 @@ export const search = async (req: Request, res: Response): Promise<void> => {
       },
     });
 
+    // Search for users
     const users = await prisma.user.findMany({
       where: {
         OR: [
@@ -32,7 +35,15 @@ export const search = async (req: Request, res: Response): Promise<void> => {
         ],
       },
     });
-    res.json({ tasks, projects, users });
+
+    // Wrap each result in a `data` object
+    res.json({
+      data: {
+        tasks,
+        projects,
+        users
+      }
+    });
   } catch (error: any) {
     res
       .status(500)

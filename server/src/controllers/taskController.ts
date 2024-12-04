@@ -17,7 +17,7 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
         attachments: true,
       },
     });
-    res.json(tasks);
+    res.json({ data: tasks }); // Wrap the tasks in a 'data' object
   } catch (error: any) {
     res
       .status(500)
@@ -58,7 +58,7 @@ export const createTask = async (
         assignedUserId,
       },
     });
-    res.status(201).json(newTask);
+    res.status(201).json({ data: newTask }); // Wrap the new task in a 'data' object
   } catch (error: any) {
     res
       .status(500)
@@ -81,7 +81,7 @@ export const updateTaskStatus = async (
         status: status,
       },
     });
-    res.json(updatedTask);
+    res.json({ data: updatedTask }); // Wrap the updated task in a 'data' object
   } catch (error: any) {
     res.status(500).json({ message: `Error updating task: ${error.message}` });
   }
@@ -105,7 +105,7 @@ export const getUserTasks = async (
         assignee: true,
       },
     });
-    res.json(tasks);
+    res.json({ data: tasks }); // Wrap the tasks in a 'data' object
   } catch (error: any) {
     res
       .status(500)

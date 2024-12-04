@@ -12,7 +12,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['clerk.dev', 'pm-s3-images.s3.us-east-2.amazonaws.com'],
+    domains: ['img.clerk.com', 'clerk.dev', 'pm-s3-images.s3.us-east-2.amazonaws.com'],
     remotePatterns: [
       {
         protocol: "https",

@@ -77,7 +77,9 @@ const Sidebar = () => {
         </div>
         {/* TEAM */}
         <div className="flex items-center gap-5 border-y-[1.5px] border-gray-200 px-8 py-4 dark:border-gray-700">
-          <Icons.icon className="w-auto h-5" />
+          <div className="text-lg font-semibold text-foreground">
+            <Icons.icon className="w-auto h-5 text-white" />
+          </div>
           <div>
             <h3 className="text-md font-bold tracking-wide dark:text-gray-200">
               EDROH TEAM

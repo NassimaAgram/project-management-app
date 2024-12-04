@@ -1,4 +1,5 @@
 "use client";
+
 import { useGetUsersQuery } from "@/state/api";
 import React from "react";
 import { useAppSelector } from "@/state/store";
@@ -23,23 +24,32 @@ const CustomToolbar = () => (
 const columns: GridColDef[] = [
   { field: "userId", headerName: "ID", width: 100 },
   { field: "username", headerName: "Username", width: 150 },
+  { field: "email", headerName: "Email", width: 280 },
   {
     field: "profilePictureUrl",
     headerName: "Profile Picture",
     width: 100,
-    renderCell: (params) => (
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="h-9 w-9">
-          <Image
-            src={`https://pm-s3-images.s3.us-east-2.amazonaws.com/${params.value}`}
-            alt={params.row.username}
-            width={100}
-            height={50}
-            className="h-full rounded-full object-cover"
-          />
+    renderCell: (params) => {
+      // Check if the URL is from Clerk (adjust the domain as needed)
+      const isClerkImage = params.value && params.value.includes("clerk.com");
+
+      // Conditionally format the image URL
+      const imageUrl = isClerkImage ? params.value : `/${params.value}`;
+
+      return (
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="h-9 w-9">
+            <Image
+              src={imageUrl}
+              alt={params.row.username}
+              width={100}
+              height={50}
+              className="h-full rounded-full object-cover"
+            />
+          </div>
         </div>
-      </div>
-    ),
+      );
+    },
   },
 ];
 

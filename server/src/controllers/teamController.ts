@@ -27,7 +27,10 @@ export const getTeams = async (req: Request, res: Response): Promise<void> => {
       })
     );
 
-    res.json(teamsWithUsernames);
+    // Wrap the teams data in a 'data' object
+    res.json({
+      data: teamsWithUsernames,
+    });
   } catch (error: any) {
     res
       .status(500)

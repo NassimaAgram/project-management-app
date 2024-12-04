@@ -1,5 +1,5 @@
 import prismaMock from "../__mocks__/prisma";
-import { getUsers, getUser, postUser } from "../controllers/userController"; 
+import { getUsers, getUser, postUser } from "../controllers/userController";
 import { Request, Response } from "express";
 
 // Reset mocks before each test
@@ -23,7 +23,9 @@ describe("getUsers", () => {
     await getUsers(req, res);
 
     expect(prismaMock.user.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith(mockUsers);
+    expect(res.json).toHaveBeenCalledWith({
+      data: mockUsers,
+    });
   });
 
   it("should return an empty array when no users exist", async () => {
@@ -35,7 +37,9 @@ describe("getUsers", () => {
     await getUsers(req, res);
 
     expect(prismaMock.user.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith([]);
+    expect(res.json).toHaveBeenCalledWith({
+      data: [],
+    });
   });
 
   it("should return a 500 error if the database call fails", async () => {
@@ -71,7 +75,9 @@ describe("getUser", () => {
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
       where: { clerkId: "1" },
     });
-    expect(res.json).toHaveBeenCalledWith(mockUser);
+    expect(res.json).toHaveBeenCalledWith({
+      data: mockUser,
+    });
   });
 
   it("should return a 500 error if the database call fails", async () => {
@@ -130,7 +136,7 @@ describe("postUser", () => {
     });
     expect(res.json).toHaveBeenCalledWith({
       message: "User Created Successfully",
-      newUser: mockNewUser,
+      data: mockNewUser,
     });
   });
 
@@ -162,7 +168,7 @@ describe("postUser", () => {
     });
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      message: `Error retrieving users: ${mockError.message}`,
+      message: `Error creating user: ${mockError.message}`,
     });
   });
 });

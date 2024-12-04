@@ -180,7 +180,7 @@ const SignUpForm = () => {
     }, [from]);
 
     return (
-        <div className="flex flex-col text-center w-full pt-5 sm:w-[60%]">
+        <div className="flex flex-col text-center text-white w-full pt-5 sm:w-[60%]">
             <motion.div
                 variants={FADE_IN_VARIANTS}
                 animate="visible"

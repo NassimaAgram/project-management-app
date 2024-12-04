@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/state/store";
 import { setIsDarkMode, setIsSidebarCollapsed } from "@/state/slices/globalSlice";
 import { useGetAuthUserQuery } from "@/state/api";
-import { useClerk } from '@clerk/nextjs'
+import { useClerk, UserButton } from '@clerk/nextjs'
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { dark } from "@clerk/themes";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +21,7 @@ const Navbar = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut({ redirectUrl: '/' });
+      await signOut({ redirectUrl: "/" });
     } catch (error) {
       console.error("Error signing out: ", error);
     }
@@ -78,27 +79,21 @@ const Navbar = () => {
         </Link>
         <div className="ml-2 mr-5 hidden min-h-[2em] w-[0.1rem] bg-gray-200 md:inline-block"></div>
         <div className="hidden items-center justify-between md:flex">
-          <div className="align-center flex h-9 w-9 justify-center">
-            {!!currentUserDetails?.profilePictureUrl ? (
-              <Image
-                src={`${currentUserDetails?.profilePictureUrl}`}
-                alt={currentUserDetails?.username || "User Profile Picture"}
-                width={100}
-                height={50}
-                className="h-full rounded-full object-cover"
-              />
-            ) : (
-              <User className="h-6 w-6 cursor-pointer self-center rounded-full dark:text-white" />
-            )}
+          <div className="items-center flex gap-2 lg:gap-4">
+            <UserButton
+              appearance={{
+                baseTheme: dark,
+                elements: {
+                  userButtonOuterIdentifier: "text-customgreys-dirtyGrey",
+                  userButtonBox: "scale-90 sm:scale-100",
+                },
+              }}
+              showName={true}
+              userProfileMode="navigation"
+              userProfileUrl="/profile"
+            />
           </div>
-          <span className="mx-3 text-gray-800 dark:text-white">
-            {currentUserDetails?.username}
-          </span>
-          <Button
-            onClick={handleSignOut}
-          >
-            Sign out
-          </Button>
+          
         </div>
       </div>
     </div>

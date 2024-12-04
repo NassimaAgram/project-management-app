@@ -70,8 +70,8 @@ const Timeline = () => {
             columnWidth={displayOptions.viewMode === ViewMode.Month ? 150 : 100}
             listCellWidth="100px"
             projectBackgroundColor={isDarkMode ? "#101214" : "#1f2937"}
-            projectProgressColor={isDarkMode ? "#1f2937" : "#aeb8c2"}
-            projectProgressSelectedColor={isDarkMode ? "#000" : "#9ba1a6"}
+            projectProgressColor="#7B1FA2"
+            projectProgressSelectedColor="#42A5F5"
           />
         </div>
       </div>

@@ -23,7 +23,8 @@ describe("getProjects", () => {
     await getProjects(req, res);
 
     expect(prismaMock.project.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith(mockProjects);
+    // Expecting the response to be wrapped in a 'data' object
+    expect(res.json).toHaveBeenCalledWith({ data: mockProjects });
   });
 
   it("should return an empty array when no projects exist", async () => {
@@ -35,7 +36,8 @@ describe("getProjects", () => {
     await getProjects(req, res);
 
     expect(prismaMock.project.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith([]);
+    // Expecting the response to be wrapped in a 'data' object
+    expect(res.json).toHaveBeenCalledWith({ data: [] });
   });
 
   it("should return a 500 error if the database call fails", async () => {
@@ -91,9 +93,9 @@ describe("createProject", () => {
       },
     });
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(mockNewProject);
+    // Expecting the response to be wrapped in a 'data' object
+    expect(res.json).toHaveBeenCalledWith({ data: mockNewProject });
   });
-
 
   it("should return a 500 error if the database call fails", async () => {
     const mockError = new Error("Database error");

@@ -30,7 +30,15 @@ const DashboardLayout = ({ children }: Props) => {
     } else {
       document.documentElement.classList.remove(darkModeClass);
     }
-  }, [isDarkMode]);  
+  }, [isDarkMode]);
+
+  // Dispatch dark mode state update if user is not authenticated
+  useEffect(() => {
+    if (!user && isDarkMode !== true) { 
+      dispatch(setIsDarkMode(true)); // Update dark mode if user is not authenticated
+    }
+  }, [user, isLoaded, dispatch, isDarkMode]);
+  
 
   // Check user authentication
   if (!isLoaded) {
@@ -38,9 +46,6 @@ const DashboardLayout = ({ children }: Props) => {
   }
 
   if (!user) {
-    //Set dark mode state based on a default value if desired
-    dispatch(setIsDarkMode(!isDarkMode));
-
     return (
       <main className="relative flex flex-col items-center justify-center px-4 min-h-screen">
         <div className="flex flex-col items-center justify-center mx-auto h-screen">
@@ -74,9 +79,7 @@ const DashboardLayout = ({ children }: Props) => {
       <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-dark-bg w-full">
         <Sidebar />
         <main
-          className={`flex flex-col w-full transition-all duration-300 bg-gray-50 dark:bg-dark-bg ${
-            isSidebarCollapsed ? "pl-0" : "md:pl-64"
-          }`}
+          className={`flex flex-col w-full transition-all duration-300 bg-gray-50 dark:bg-dark-bg ${isSidebarCollapsed ? "pl-0" : "md:pl-64"}`}
         >
           <Navbar />
           {children}

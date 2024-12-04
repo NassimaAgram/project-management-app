@@ -1,5 +1,5 @@
 import prismaMock from "../__mocks__/prisma";
-import { getTeams } from "../controllers/teamController"; // Update with correct controller path
+import { getTeams } from "../controllers/teamController";
 import { Request, Response } from "express";
 
 // Reset mocks before each test
@@ -59,7 +59,9 @@ describe("getTeams", () => {
 
     expect(prismaMock.team.findMany).toHaveBeenCalledTimes(1);
     expect(prismaMock.user.findUnique).toHaveBeenCalledTimes(4);
-    expect(res.json).toHaveBeenCalledWith(expectedTeamsWithUsernames);
+    expect(res.json).toHaveBeenCalledWith({
+      data: expectedTeamsWithUsernames
+    });
   });
 
   it("should return an empty array when no teams exist", async () => {
@@ -71,7 +73,9 @@ describe("getTeams", () => {
     await getTeams(req, res);
 
     expect(prismaMock.team.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith([]);
+    expect(res.json).toHaveBeenCalledWith({
+      data: []
+    });
   });
 
   it("should return a 500 error if the database call fails", async () => {

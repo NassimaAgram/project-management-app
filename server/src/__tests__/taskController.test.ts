@@ -1,5 +1,5 @@
-import prismaMock from "../__mocks__/prisma"; // Import mocked Prisma client
-import { getTasks, createTask, updateTaskStatus, getUserTasks } from "../controllers/taskController"; // Import your task controller functions
+import prismaMock from "../__mocks__/prisma";
+import { getTasks, createTask, updateTaskStatus, getUserTasks } from "../controllers/taskController";
 import { Request, Response } from "express";
 
 // Reset mocks before each test
@@ -23,7 +23,9 @@ describe("getTasks", () => {
     await getTasks(req, res);
 
     expect(prismaMock.task.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith(mockTasks);
+    expect(res.json).toHaveBeenCalledWith({
+      data: mockTasks
+    });
   });
 
   it("should return an empty array when no tasks exist", async () => {
@@ -35,7 +37,9 @@ describe("getTasks", () => {
     await getTasks(req, res);
 
     expect(prismaMock.task.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith([]);
+    expect(res.json).toHaveBeenCalledWith({
+      data: []
+    });
   });
 
   it("should return a 500 error if the database call fails", async () => {
@@ -97,7 +101,9 @@ describe("createTask", () => {
       },
     });
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(mockNewTask);
+    expect(res.json).toHaveBeenCalledWith({
+      data: mockNewTask
+    });
   });
 
   it("should return a 500 error if the database call fails", async () => {
@@ -161,7 +167,9 @@ describe("updateTaskStatus", () => {
       where: { id: 1 },
       data: { status: "Completed" },
     });
-    expect(res.json).toHaveBeenCalledWith(mockUpdatedTask);
+    expect(res.json).toHaveBeenCalledWith({
+      data: mockUpdatedTask
+    });
   });
 
   it("should return a 500 error if the database call fails", async () => {
@@ -201,7 +209,9 @@ describe("getUserTasks", () => {
     await getUserTasks(req, res);
 
     expect(prismaMock.task.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith(mockUserTasks);
+    expect(res.json).toHaveBeenCalledWith({
+      data: mockUserTasks
+    });
   });
 
   it("should return an empty array when no tasks are assigned to the user", async () => {
@@ -213,7 +223,9 @@ describe("getUserTasks", () => {
     await getUserTasks(req, res);
 
     expect(prismaMock.task.findMany).toHaveBeenCalledTimes(1);
-    expect(res.json).toHaveBeenCalledWith([]);
+    expect(res.json).toHaveBeenCalledWith({
+      data: []
+    });
   });
 
   it("should return a 500 error if the database call fails", async () => {

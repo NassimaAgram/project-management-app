@@ -1,10 +1,10 @@
 [
   {
-    "username": "AliceJones",
+    "username": "strive_revolution",
     "teamId": 1,
-    "profilePictureUrl": "p1.jpeg",
-    "clerkId": "user1234567001",
-    "email": "alice.jones@example.com"
+    "profilePictureUrl": "https://img.clerk.com/eyJ0eXBlIjoiZGVmYXVsdCIsImlpZCI6Imluc18ycDdGWVlBSFNVUlRRM3VjMnZIdHh2RFNOa1giLCJyaWQiOiJ1c2VyXzJwaHM2anpCWkt3cnYzcWIzUGNCc1BTUjhiVSJ9",
+    "clerkId": "user_2phs6jzBZKwrv3qb3PcBsPSR8bU",
+    "email": "striverevolution@gmail.com"
   },
   {
     "username": "BobSmith",

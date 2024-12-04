@@ -6,11 +6,9 @@ const prisma = new PrismaClient();
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await prisma.user.findMany();
-    res.json(users);
+    res.json({ data: users });  // Wrap the result in a 'data' object
   } catch (error: any) {
-    res
-      .status(500)
-      .json({ message: `Error retrieving users: ${error.message}` });
+    res.status(500).json({ message: `Error retrieving users: ${error.message}` });
   }
 };
 
@@ -23,7 +21,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
       },
     });
 
-    res.json(user);
+    res.json({ data: user });  // Wrap the result in a 'data' object
   } catch (error: any) {
     res
       .status(500)

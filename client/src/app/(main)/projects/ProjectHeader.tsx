@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import ModalNewProject from "./ModalNewProject";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   activeTab: string;
@@ -29,12 +30,11 @@ const ProjectHeader = ({ activeTab, setActiveTab }: Props) => {
         <Header
           name="Product Design Development"
           buttonComponent={
-            <button
-              className="flex items-center rounded-md bg-blue-primary px-3 py-2 text-white hover:bg-blue-600"
+            <Button
               onClick={() => setIsModalNewProjectOpen(true)}
             >
               <PlusSquare className="mr-2 h-5 w-5" /> New Boards
-            </button>
+            </Button>
           }
         />
       </div>
