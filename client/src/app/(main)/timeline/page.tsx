@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppSelector } from "@/app/redux";
+import { useAppSelector } from "@/state/store";
 import Header from "@/components/Header";
 import { useGetProjectsQuery } from "@/state/api";
 import { DisplayOption, Gantt, ViewMode } from "gantt-task-react";

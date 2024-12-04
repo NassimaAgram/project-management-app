@@ -31,13 +31,14 @@
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/types/**/*.d.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
-   ".next", 
-   "build"
+    ".next",
+    "build"
   ]
 }

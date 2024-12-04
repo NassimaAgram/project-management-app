@@ -1,11 +1,8 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BaseQueryApi, FetchArgs } from "@reduxjs/toolkit/query";
-import { auth, currentUser } from "@clerk/nextjs/server";
-import { Clerk } from "@clerk/clerk-js";
-import { User as ClerkUser } from "@clerk/nextjs/server";
-import { toast } from "sonner";
+'server-only';
 
-// Define your interfaces here
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"; 
+import { auth, currentUser } from "@clerk/nextjs/server"; 
+
 export interface Project {
   id: number;
   name: string;
@@ -30,12 +27,11 @@ export enum Status {
 }
 
 export interface User {
-  [x: string]: any;
   userId?: number;
   username: string;
   email: string;
   profilePictureUrl?: string;
-  clerkID?: string;
+  clerkId?: string; // Changed from cognitoId to clerkId
   teamId?: number;
 }
 
@@ -80,115 +76,51 @@ export interface Team {
   projectManagerUserId?: number;
 }
 
-const customBaseQuery = async (
-  args: string | FetchArgs,
-  api: BaseQueryApi,
-  extraOptions: any,
-) => {
-  const baseQuery = fetchBaseQuery({
+export const api = createApi({
+  baseQuery: fetchBaseQuery({
     baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
     prepareHeaders: async (headers) => {
-      // Get Clerk token from the current session
-      const token = await window.Clerk?.session?.getToken();
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
+      try {
+        // Fetch Clerk session and token
+        const session = await auth(); // Using Clerk's auth method
+        const token = await session.getToken(); 
+
+        if (token) {
+          headers.set("Authorization", `Bearer ${token}`);
+        }
+      } catch (error) {
+        console.error("Error fetching Clerk session:", error);
       }
       return headers;
     },
-  });
-
-  try {
-    // Make the API request
-    const result: any = await baseQuery(args, api, extraOptions);
-
-    // If there is an error in the response, handle it
-    if (result.error) {
-      const errorData = result.error.data;
-      const errorMessage =
-        errorData?.message ||
-        result.error.status.toString() ||
-        "An error occurred";
-      toast.error(`Error: ${errorMessage}`);
-      return { error: { status: "FETCH_ERROR", error: errorMessage } }; // Ensure error is returned
-    }
-
-    // For mutation requests, show success messages
-    const isMutationRequest =
-      (args as FetchArgs).method && (args as FetchArgs).method !== "GET";
-    if (isMutationRequest && result.data?.message) {
-      toast.success(result.data.message);
-    }
-
-    // Normalize the response data if present
-    if (result.data) {
-      return { data: result.data.data }; // Ensure data is returned
-    } else if (
-      result.error?.status === 204 ||
-      result.meta?.response?.status === 24
-    ) {
-      return { data: null }; // Handle 204 and similar status codes
-    }
-
-    // If no result or error, return an empty object (fix for unhandled cases)
-    return { error: { status: "NO_DATA", error: "No data received" } };
-  } catch (error: unknown) {
-    // Handle unknown errors
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
-    return { error: { status: "FETCH_ERROR", error: errorMessage } }; // Return error object
-  }
-};
-
-
-export const api = createApi({
-  baseQuery: customBaseQuery, // Use the custom query with Clerk token
+  }),
   reducerPath: "api",
   tagTypes: ["Projects", "Tasks", "Users", "Teams"],
   endpoints: (build) => ({
-    /* 
-    ===============
-    USER CLERK
-    =============== 
-    */
-    createUser: build.mutation<User, Partial<User>>({
-      query: (user) => ({
-        url: "users", // Assuming your API endpoint is /users
-        method: "POST",
-        body: user,
-      }),
-      invalidatesTags: ["Users"], 
-    }),    
-    getAuthUser: build.query<any, void>({
-      queryFn: async (_, _queryApi, _extraOptions, fetchWithBQ) => {
+    getAuthUser: build.query({
+      queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
         try {
-          // Call your server-side handler to get the authenticated user
-          const res = await fetch("/state/server-handler");
-          if (!res.ok) {
-            throw new Error("Unauthorized or user not found");
-          }
+          // Fetch the current user details
+          const user = await currentUser(); // Make sure to call currentUser() as it's a function
+          const session = await auth(); // Get the Clerk session
+          if (!session) throw new Error("No session found");
+          
+          const clerkId = user?.id;  
+          
+          // Fetch additional user details from your API
+          const userDetailsResponse = await fetchWithBQ(`users/${clerkId}`);
+          const userDetails = userDetailsResponse.data as User;
 
-          const user = await res.json();
-
-          // If user doesn't exist, handle accordingly
-          if (!user || !user.id) {
-            throw new Error("User data not found");
-          }
-
-          // Return user data if found
-          return { data: user };
+          return { data: { user, clerkId, userDetails } };
         } catch (error: any) {
-          return { error: error.message || "Unexpected error occurred" };
+          return { error: error.message || "Could not fetch user data" };
         }
       },
-    }), 
+    }),
     getProjects: build.query<Project[], void>({
       query: () => "projects",
       providesTags: ["Projects"],
-      // Ensure proper return of data
-      transformResponse: (response) => {
-        return response.data || []; // Return an empty array if no projects
-      },
-    }),    
+    }),
     createProject: build.mutation<Project, Partial<Project>>({
       query: (project) => ({
         url: "projects",
@@ -244,7 +176,6 @@ export const api = createApi({
 });
 
 export const {
-  useCreateUserMutation,
   useGetProjectsQuery,
   useCreateProjectMutation,
   useGetTasksQuery,

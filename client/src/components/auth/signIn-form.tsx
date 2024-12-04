@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSignIn } from "@clerk/nextjs";
+import { useAuth, useSignIn, useUser } from "@clerk/nextjs";
 import { OAuthStrategy } from "@clerk/types";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,13 @@ import { FADE_IN_VARIANTS } from "@/constants";
 import { z } from "zod";
 import Link from "next/link";
 import { SignInSchema, SignInSchemaType } from "@/schema";
+import { Label } from "../ui/label";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 
 
 const SignInForm = () => {
+
+    const { user } = useUser();
 
     const [formData, setFormData] = useState<SignInSchemaType>({
         email: "",
@@ -37,6 +41,7 @@ const SignInForm = () => {
     const router = useRouter();
     const params = useSearchParams();
     const from = params.get("from");
+    const { signOut } = useAuth();
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -50,15 +55,18 @@ const SignInForm = () => {
         }
         if (strategy === "oauth_github") {
             setIsGithubLoading(true);
-        } 
+        }
         if (strategy === "oauth_linkedin") {
             setIsLinkedinLoading(true);
         }
 
         try {
+
+            await signOut(); // Sign out the existing session
+
             await signIn?.authenticateWithRedirect({
                 strategy,
-                redirectUrl: "/auth/signup/sso-callback",
+                redirectUrl: "/auth/sso-callback",
                 redirectUrlComplete: "/auth/callback",
             });
 
@@ -66,11 +74,11 @@ const SignInForm = () => {
                 strategy === "oauth_google"
                     ? "Google"
                     : strategy === "oauth_github"
-                    ? "GitHub"
-                    : strategy === "oauth_linkedin"
-                    ? "LinkedIn"
-                    : "Unknown";
-    
+                        ? "GitHub"
+                        : strategy === "oauth_linkedin"
+                            ? "LinkedIn"
+                            : "Unknown";
+
             toast.loading(`Redirecting to ${providerName}...`);
         } catch (error) {
             console.error(error);
@@ -91,6 +99,7 @@ const SignInForm = () => {
         setIsEmailLoading(true);
 
         try {
+
             await signIn.create({
                 identifier: email,
             });
@@ -104,12 +113,14 @@ const SignInForm = () => {
 
             setIsCodeSent(true);
 
+            toast.success("We have sent a code to your email address");
+
         } catch (error: any) {
             console.error(JSON.stringify(error, null, 2));
             switch (error.errors[0]?.code) {
                 case "form_identifier_not_found":
                     toast.error("This email is not registered. Please sign up first.");
-                    router.push("/auth/sign-up?from=sign-in");
+                    router.push("/auth/signup?from=signin");
                     break;
                 case "too_many_attempts":
                     toast.error("Too many attempts. Please try again later.");
@@ -143,6 +154,7 @@ const SignInForm = () => {
             });
 
             if (signInAttempt.status === "complete") {
+                toast.success("successful authentification");
                 await setActive({ session: signInAttempt.createdSessionId });
                 router.push("/auth/callback");
             } else {
@@ -176,26 +188,6 @@ const SignInForm = () => {
             setIsEmailOpen(false);
         }
     }, []);
-
-    const handleChange = (field: keyof SignInSchemaType, value: string) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const handleSignIn = async (e: { preventDefault: () => void }) => {
-        e.preventDefault();
-
-        // Validate form data with Zod
-        const validation = SignInSchema.safeParse(formData);
-
-        if (!validation.success) {
-            validation.error.errors.forEach((error) => {
-                toast.error(error.message);
-            });
-            return;
-        }
-
-        setIsLoading(true);
-    };
 
     return (
         <div className="flex flex-col text-center w-full sm:w-[60%]">
@@ -283,7 +275,7 @@ const SignInForm = () => {
                                 Continue with email
                             </Button>
                             <div className="pt-8 text-muted-foreground text-sm">
-                                <span>Don't have an account?</span> <Link href="/auth/sign-in" className="text-foreground">Sign Up</Link>
+                                <span>Don't have an account?</span> <Link href="/auth/signup" className="text-foreground">Sign Up</Link>
                             </div>
                         </div>
                     </motion.div>
@@ -299,18 +291,30 @@ const SignInForm = () => {
                                 onSubmit={handleVerifyCode}
                                 className="py-8 w-full flex flex-col gap-4"
                             >
-                                <div className="w-full">
-                                    <Input
-                                        autoFocus={true}
-                                        name="code"
-                                        type="number"
-                                        value={code}
-                                        maxLength={6}
-                                        disabled={isCodeLoading}
-                                        onChange={(e) => setCode(e.target.value)}
-                                        placeholder="Enter the verification code"
-                                        className="w-full"
-                                    />
+                                <div className="felx justify-center w-full pl-0.5">
+                                    <Label htmlFor="name">
+                                        Verification Code
+                                    </Label>
+                                    <div className="flex justify-center w-full my-2">
+                                        <InputOTP
+                                            id="code"
+                                            name="code"
+                                            maxLength={6}
+                                            value={code}
+                                            disabled={!isLoaded || isCodeLoading}
+                                            onChange={(e) => setCode(e)}
+                                            className="felx justify-center w-full"
+                                        >
+                                            <InputOTPGroup>
+                                                <InputOTPSlot index={0} />
+                                                <InputOTPSlot index={1} />
+                                                <InputOTPSlot index={2} />
+                                                <InputOTPSlot index={3} />
+                                                <InputOTPSlot index={4} />
+                                                <InputOTPSlot index={5} />
+                                            </InputOTPGroup>
+                                        </InputOTP>
+                                    </div>
                                 </div>
                                 <div className="w-full">
                                     <Button
@@ -330,8 +334,7 @@ const SignInForm = () => {
                                         className="w-full"
                                     >
                                         <Link href="https://mail.google.com" target="_blank">
-                                            <Icons.gmail className="w-4 h-4 mr-2" />
-                                            Gmail
+                                            Open gmail
                                         </Link>
                                     </Button>
                                     <Button
@@ -342,8 +345,7 @@ const SignInForm = () => {
                                         className="w-full"
                                     >
                                         <Link href="https://outlook.live.com" target="_blank">
-                                            <Icons.outlook className="w-4 h-4 mr-2" />
-                                            Outlook
+                                            Open outlook
                                         </Link>
                                     </Button>
                                 </div>

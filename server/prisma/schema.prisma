@@ -17,6 +17,7 @@ datasource db {
 model User {
   userId            Int     @id @default(autoincrement())
   clerkId           String  @unique
+  email             String  @unique
   username          String  @unique
   profilePictureUrl String?
   teamId            Int?

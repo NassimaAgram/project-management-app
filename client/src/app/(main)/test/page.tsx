@@ -1,11 +1,21 @@
-import React from 'react'
+"use client";
 
-type Props = {}
+import { useAppSelector } from "@/state/store"; // Adjust the path if needed
 
-function TestPage({}: Props) {
+const Page = () => {
+  const user = useAppSelector((state) => state.auth.user);
+
+  if (!user) {
+    return (
+      <p className="flex justify-center text-2xl">Loading user data...</p>
+    );
+  }
+
   return (
-    <div>TestPage</div>
-  )
-}
+    <p className="flex justify-center text-2xl">
+      Welcome to ProjeXpert {user.username}
+    </p>
+  );
+};
 
-export default TestPage
+export default Page;

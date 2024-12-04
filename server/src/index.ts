@@ -1,11 +1,15 @@
 import 'dotenv/config';
 import express, { Request, Response } from "express";
-import { requireAuthentication } from "./middleware/authMiddleware";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import { requireAuthentication } from "./middleware/authMiddleware";
+import {
+  clerkMiddleware,
+  createClerkClient,
+} from "@clerk/express";
 
 /* ROUTE IMPORTS */
 import projectRoutes from "./routes/projectRoutes";
@@ -15,14 +19,10 @@ import userRoutes from "./routes/userRoutes";
 import teamRoutes from "./routes/teamRoutes";
 
 /* CONFIGURATIONS */
-declare global {
-  namespace Express {
-    interface Request {
-      auth?: import('@clerk/express').AuthObject;
-    }
-  }
-}
 
+export const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+});
 
 dotenv.config();
 const app = express();
@@ -33,11 +33,7 @@ app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
-
-app.get('/auth-state', requireAuthentication(), (req:Request, res) => {
-  const authState = req.auth
-  return res.json(authState)
-})
+app.use(clerkMiddleware());
 
 app.use("/projects", projectRoutes);
 app.use("/tasks", taskRoutes);

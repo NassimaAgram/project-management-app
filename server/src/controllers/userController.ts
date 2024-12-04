@@ -34,20 +34,37 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 export const postUser = async (req: Request, res: Response) => {
   try {
     const {
-      username,
       clerkId,
-      profilePictureUrl = "i1.jpg",
-      teamId = 1,
+      username,
+      email,
+      profilePictureUrl,
+      teamId,
     } = req.body;
-    const newUser = await prisma.user.create({
+
+    // Validate user data
+    if (!clerkId || !email) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { clerkId }, 
+    });
+
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists" });
+    }
+
+    const data = await prisma.user.create({
       data: {
-        username,
         clerkId,
+        username,
+        email,
         profilePictureUrl,
         teamId,
       },
     });
-    res.json({ message: "User Created Successfully", newUser });
+    res.status(201).json({ message: "User Created Successfully", data });
   } catch (error: any) {
     res
       .status(500)

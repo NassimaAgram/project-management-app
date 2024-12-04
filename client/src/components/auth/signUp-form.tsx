@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import { useClerk, useSignIn, useSignUp } from "@clerk/nextjs";
 
 import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "../ui/input-otp";
 import { Button } from "../ui/button";
 import { SignUpSchema, SignUpSchemaType } from "@/schema";
 import Link from "next/link";
@@ -32,6 +34,7 @@ const SignUpForm = () => {
     const { isLoaded, signUp, setActive } = useSignUp();
 
     const [email, setEmail] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
     const [code, setCode] = useState<string>("");
     const [isEmailOpen, setIsEmailOpen] = useState<boolean>(true);
     const [isCodeSent, setIsCodeSent] = useState<boolean>(false);
@@ -47,17 +50,17 @@ const SignUpForm = () => {
         }
         if (strategy === "oauth_github") {
             setIsGithubLoading(true);
-        } 
+        }
         if (strategy === "oauth_linkedin") {
             setIsLinkedinLoading(true);
         }
-        
+
         await signOut();
 
         try {
             await signIn?.authenticateWithRedirect({
                 strategy,
-                redirectUrl: "/auth/sign-up/sso-callback",
+                redirectUrl: "/auth/sso-callback",
                 redirectUrlComplete: "/auth/callback",
             });
 
@@ -65,11 +68,11 @@ const SignUpForm = () => {
                 strategy === "oauth_google"
                     ? "Google"
                     : strategy === "oauth_github"
-                    ? "GitHub"
-                    : strategy === "oauth_linkedin"
-                    ? "LinkedIn"
-                    : "Unknown";
-    
+                        ? "GitHub"
+                        : strategy === "oauth_linkedin"
+                            ? "LinkedIn"
+                            : "Unknown";
+
             toast.loading(`Redirecting to ${providerName}...`);
         } catch (error) {
             console.error(error);
@@ -87,14 +90,20 @@ const SignUpForm = () => {
             return;
         }
 
+        if (!username) {
+            toast.error("Please enter a username");
+            return;
+        }
+
         setIsEmailLoading(true);
 
         try {
 
             await signOut();
-            
+
             await signUp.create({
                 emailAddress: email,
+                username: username,
             });
 
             await signUp.prepareEmailAddressVerification({
@@ -108,7 +117,7 @@ const SignUpForm = () => {
             switch (error.errors[0]?.code) {
                 case "form_identifier_exists":
                     toast.error("This email is already registered. Please sign in.");
-                    router.push("/auth/sign-in?from=sign-up");
+                    router.push("/auth/signin?from=signup");
                     break;
                 case "form_password_pwned":
                     toast.error("The password is too common. Please choose a stronger password.");
@@ -126,10 +135,6 @@ const SignUpForm = () => {
         } finally {
             setIsEmailLoading(false);
         }
-
-        // Check if the email is in db or not or if email is already have an account
-        // If email is already have an account, then show login form
-        // If email is not in db, then send a code to email address
     };
 
     const handleVerifyCode = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -192,7 +197,7 @@ const SignUpForm = () => {
                     {isEmailOpen
                         ? "Create your account"
                         : isCodeSent ? "Check your email"
-                            : "Enter your email"}
+                            : "Enter your email and username"}
                 </h1>
                 <p className="text-sm text-muted-foreground mt-2">
                     {isEmailOpen
@@ -265,7 +270,7 @@ const SignUpForm = () => {
                             </Button>
                         </div>
                         <div className="pt-8 text-muted-foreground text-sm">
-                            <span>Already have an account?</span> <Link href="/auth/sign-in" className="text-foreground">Sign In</Link>
+                            <span>Already have an account?</span> <Link href="/auth/signin" className="text-foreground">Sign In</Link>
                         </div>
                     </motion.div>
                 </div>
@@ -280,17 +285,30 @@ const SignUpForm = () => {
                                 onSubmit={handleVerifyCode}
                                 className="py-8 w-full flex flex-col gap-4"
                             >
-                                <div className="w-full">
-                                    <Input
-                                        autoFocus={true}
-                                        name="code"
-                                        type="code"
-                                        value={code}
-                                        disabled={isCodeLoading}
-                                        onChange={(e) => setCode(e.target.value)}
-                                        placeholder="Enter the verification code"
-                                        className="w-full"
-                                    />
+                                <div className="felx justify-center w-full pl-0.5">
+                                    <Label htmlFor="name">
+                                        Verification Code
+                                    </Label>
+                                    <div className="flex justify-center w-full my-2">
+                                        <InputOTP
+                                            id="code"
+                                            name="code"
+                                            maxLength={6}
+                                            value={code}
+                                            disabled={!isLoaded || isCodeLoading}
+                                            onChange={(e) => setCode(e)}
+                                            className="felx justify-center w-full"
+                                        >
+                                            <InputOTPGroup>
+                                                <InputOTPSlot index={0} />
+                                                <InputOTPSlot index={1} />
+                                                <InputOTPSlot index={2} />
+                                                <InputOTPSlot index={3} />
+                                                <InputOTPSlot index={4} />
+                                                <InputOTPSlot index={5} />
+                                            </InputOTPGroup>
+                                        </InputOTP>
+                                    </div>
                                 </div>
                                 <div className="w-full">
                                     <Button
@@ -337,6 +355,23 @@ const SignUpForm = () => {
                                 className="py-8 w-full flex flex-col gap-4"
                             >
                                 <div className="w-full">
+                                    <Label htmlFor="name" className="flex justify-start pb-2">
+                                        Username
+                                    </Label>
+                                    <Input
+                                        autoFocus
+                                        name="username"
+                                        type="username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="Enter your username"
+                                        className="w-full"
+                                    />
+                                </div>
+                                <div className="w-full">
+                                    <Label htmlFor="name" className="flex justify-start pb-2">
+                                        Email
+                                    </Label>
                                     <Input
                                         autoFocus
                                         name="email"

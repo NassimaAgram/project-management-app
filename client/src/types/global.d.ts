@@ -1,4 +1,5 @@
-export interface Project {
+declare global {
+  export interface Project {
     id: number;
     name: string;
     description?: string;
@@ -70,4 +71,6 @@ export interface Project {
     productOwnerUserId?: number;
     projectManagerUserId?: number;
   }
-  
+}
+
+export {};

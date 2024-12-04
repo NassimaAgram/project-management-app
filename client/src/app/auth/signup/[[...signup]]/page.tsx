@@ -4,8 +4,8 @@ import { Suspense } from "react";
 
 const SignUpPage = () => {
     return (
-<div className="flex flex-col items-center justify-center size-full">            
-    <Container>
+        <div className="flex flex-col items-center justify-center size-full">
+            <Container>
                 <Wrapper className="flex flex-col mx-auto justify-center items-center min-h-screen">
                     <Particles
                         className="absolute inset-0 w-full h-full -z-10"

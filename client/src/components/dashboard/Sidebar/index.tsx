@@ -1,9 +1,9 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/app/redux";
-import { setIsSidebarCollapsed } from "@/state";
+import { useAppDispatch, useAppSelector } from "@/state/store";
+import { setIsSidebarCollapsed } from "@/state/slices/globalSlice";
 import { useGetAuthUserQuery, useGetProjectsQuery } from "@/state/api";
-import { signOut } from "aws-amplify/auth";
+import { useClerk } from '@clerk/nextjs'
 import {
   AlertCircle,
   AlertOctagon,
@@ -26,8 +26,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
+import Icons from "@/components/global/icons";
 
-const DashboardSidebar = () => {
+const Sidebar = () => {
   const [showProjects, setShowProjects] = useState(true);
   const [showPriority, setShowPriority] = useState(true);
 
@@ -37,7 +38,9 @@ const DashboardSidebar = () => {
     (state) => state.global.isSidebarCollapsed,
   );
 
-  const { data: currentUser } = useGetAuthUserQuery({});
+  const { data: currentUser } = useGetAuthUserQuery();
+  const { signOut } = useClerk()
+
   const handleSignOut = async () => {
     try {
       await signOut();
@@ -58,8 +61,8 @@ const DashboardSidebar = () => {
       <div className="flex h-[100%] w-full flex-col justify-start">
         {/* TOP LOGO */}
         <div className="z-50 flex min-h-[56px] w-64 items-center justify-between bg-white px-6 pt-3 dark:bg-black">
-          <div className="text-xl font-bold text-gray-800 dark:text-white">
-            EDLIST
+          <div className="text-xl font-bold text-gray-900 dark:text-white">
+            Proje<span className="text-transparent font-bold bg-gradient-to-b from-purple-700 to-blue-400 bg-clip-text inline-bloc">X</span>pert
           </div>
           {isSidebarCollapsed ? null : (
             <button
@@ -74,12 +77,7 @@ const DashboardSidebar = () => {
         </div>
         {/* TEAM */}
         <div className="flex items-center gap-5 border-y-[1.5px] border-gray-200 px-8 py-4 dark:border-gray-700">
-          <Image
-            src="https://pm-s3-images.s3.us-east-2.amazonaws.com/logo.png"
-            alt="Logo"
-            width={40}
-            height={40}
-          />
+          <Icons.icon className="w-auto h-5" />
           <div>
             <h3 className="text-md font-bold tracking-wide dark:text-gray-200">
               EDROH TEAM
@@ -92,7 +90,7 @@ const DashboardSidebar = () => {
         </div>
         {/* NAVBAR LINKS */}
         <nav className="z-10 w-full">
-          <SidebarLink icon={Home} label="Home" href="/" />
+          <SidebarLink icon={Home} label="Dashboard" href="/dashboard" />
           <SidebarLink icon={Briefcase} label="Timeline" href="/timeline" />
           <SidebarLink icon={Search} label="Search" href="/search" />
           <SidebarLink icon={Settings} label="Settings" href="/settings" />
@@ -205,9 +203,8 @@ const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
   return (
     <Link href={href} className="w-full">
       <div
-        className={`relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 dark:bg-black dark:hover:bg-gray-700 ${
-          isActive ? "bg-gray-100 text-white dark:bg-gray-600" : ""
-        } justify-start px-8 py-3`}
+        className={`relative flex cursor-pointer items-center gap-3 transition-colors hover:bg-gray-100 dark:bg-black dark:hover:bg-gray-700 ${isActive ? "bg-gray-100 text-white dark:bg-gray-600" : ""
+          } justify-start px-8 py-3`}
       >
         {isActive && (
           <div className="absolute left-0 top-0 h-[100%] w-[5px] bg-blue-200" />
@@ -222,4 +219,4 @@ const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
   );
 };
 
-export default DashboardSidebar;
+export default Sidebar;

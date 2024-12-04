@@ -11,8 +11,8 @@ beforeEach(() => {
 describe("getUsers", () => {
   it("should return a list of users", async () => {
     const mockUsers = [
-      { id: 1, username: "user1", clerkId: "clerkId1", profilePictureUrl: "i1.jpg", teamId: 1 },
-      { id: 2, username: "user2", clerkId: "clerkId2", profilePictureUrl: "i2.jpg", teamId: 2 },
+      { id: 1, username: "user1", clerkId: "1", profilePictureUrl: "i1.jpg", teamId: 1 },
+      { id: 2, username: "user2", clerkId: "2", profilePictureUrl: "i2.jpg", teamId: 2 },
     ];
 
     prismaMock.user.findMany.mockResolvedValue(mockUsers);
@@ -59,17 +59,17 @@ describe("getUsers", () => {
 // Test for getUser
 describe("getUser", () => {
   it("should return a user by clerkId", async () => {
-    const mockUser = { id: 1, username: "user1", clerkId: "clerkId1", profilePictureUrl: "i1.jpg", teamId: 1 };
+    const mockUser = { id: 1, username: "user1", clerkId: "1", profilePictureUrl: "i1.jpg", teamId: 1 };
 
     prismaMock.user.findUnique.mockResolvedValue(mockUser);
 
-    const req = { params: { clerkId: "clerkId1" } } as unknown as Request;
+    const req = { params: { clerkId: "1" } } as unknown as Request;
     const res = { json: jest.fn() } as unknown as Response;
 
     await getUser(req, res);
 
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
-      where: { clerkId: "clerkId1" },
+      where: { clerkId: "1" },
     });
     expect(res.json).toHaveBeenCalledWith(mockUser);
   });
@@ -79,13 +79,13 @@ describe("getUser", () => {
 
     prismaMock.user.findUnique.mockRejectedValue(mockError);
 
-    const req = { params: { clerkId: "clerkId1" } } as unknown as Request;
+    const req = { params: { clerkId: "1" } } as unknown as Request;
     const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
 
     await getUser(req, res);
 
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
-      where: { clerkId: "clerkId1" },
+      where: { clerkId: "1" },
     });
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
@@ -100,7 +100,7 @@ describe("postUser", () => {
     const mockNewUser = {
       id: 1,
       username: "user1",
-      clerkId: "clerkId1",
+      clerkId: "1",
       profilePictureUrl: "i1.jpg",
       teamId: 1,
     };
@@ -110,7 +110,7 @@ describe("postUser", () => {
     const req = {
       body: {
         username: "user1",
-        clerkId: "clerkId1",
+        clerkId: "1",
         profilePictureUrl: "i1.jpg",
         teamId: 1,
       },
@@ -123,7 +123,7 @@ describe("postUser", () => {
     expect(prismaMock.user.create).toHaveBeenCalledWith({
       data: {
         username: "user1",
-        clerkId: "clerkId1",
+        clerkId: "1",
         profilePictureUrl: "i1.jpg",
         teamId: 1,
       },
@@ -142,7 +142,7 @@ describe("postUser", () => {
     const req = {
       body: {
         username: "user1",
-        clerkId: "clerkId1",
+        clerkId: "1",
         profilePictureUrl: "i1.jpg",
         teamId: 1,
       },
@@ -155,7 +155,7 @@ describe("postUser", () => {
     expect(prismaMock.user.create).toHaveBeenCalledWith({
       data: {
         username: "user1",
-        clerkId: "clerkId1",
+        clerkId: "1",
         profilePictureUrl: "i1.jpg",
         teamId: 1,
       },

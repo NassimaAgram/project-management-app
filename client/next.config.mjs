@@ -1,10 +1,18 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        async_hooks: false, // Exclude server-only module
+      };
+    }
+    return config;
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['clerk.dev'],
+    domains: ['clerk.dev', 'pm-s3-images.s3.us-east-2.amazonaws.com'],
     remotePatterns: [
       {
         protocol: "https",
@@ -14,12 +22,6 @@ const nextConfig = {
       }
     ]
   },
-  experimental: {
-    turbo: {
-      cache: true, // Enable Turbo caching
-    },
-  },
-  output: 'standalone',
 };
 
 export default nextConfig;

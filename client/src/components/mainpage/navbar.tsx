@@ -4,6 +4,8 @@ import { cn } from "@/functions";
 import { ArrowRightIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from 'react';
+import { useUser, UserButton } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import Icons from "../global/icons";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
@@ -11,9 +13,7 @@ import Menu from "./menu";
 import MobileMenu from "./mobile-menu";
 
 const Navbar = () => {
-
-    const user = false;
-
+    const { user, isLoaded, isSignedIn } = useUser(); // Get the user from Clerk
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     useEffect(() => {
@@ -27,7 +27,6 @@ const Navbar = () => {
             document.body.style.overflow = '';
         };
     }, [isOpen]);
-
 
     return (
         <div className="relative w-full h-full">
@@ -50,26 +49,36 @@ const Navbar = () => {
                             </div>
                         </div>
                         <div className="items-center flex gap-2 lg:gap-4">
-                            {user ? (
-                                <Button size="sm" variant="white" asChild className="hidden sm:flex">
-                                    <Link href="/app">
-                                        Dashboard
+                            {/* Conditionally render buttons based on user authentication status */}
+                            {isLoaded && user && isSignedIn ? (
+                                // If the user is logged in, show the UserButton component
+                                <UserButton
+                                    appearance={{
+                                        baseTheme: dark,
+                                        elements: {
+                                            userButtonOuterIdentifier: "text-customgreys-dirtyGrey",
+                                            userButtonBox: "scale-90 sm:scale-100",
+                                        },
+                                    }}
+                                    showName={true}
+                                    userProfileMode="navigation"
+                                    userProfileUrl="/profile"
+                                />
+                            ) : (
+                            <>
+                                {/* If the user is not logged in, show the Sign In and Sign Up buttons */}
+                                <Button size="sm" variant="tertiary" asChild className="hover:translate-y-0 hover:scale-100">
+                                    <Link href="/auth/signin">
+                                        Sign In
                                     </Link>
                                 </Button>
-                            ) : (
-                                <>
-                                    <Button size="sm" variant="tertiary" asChild className="hover:translate-y-0 hover:scale-100">
-                                        <Link href="/auth/sign-in">
-                                            Sign In
-                                        </Link>
-                                    </Button>
-                                    <Button size="sm" variant="white" asChild className="hidden sm:flex">
-                                        <Link href="/auth/sign-up">
-                                            Start for free
-                                            <ArrowRightIcon className="w-4 h-4 ml-2 hidden lg:block" />
-                                        </Link>
-                                    </Button>
-                                </>
+                                <Button size="sm" variant="white" asChild className="hidden sm:flex">
+                                    <Link href="/auth/signup">
+                                        Start for free
+                                        <ArrowRightIcon className="w-4 h-4 ml-2 hidden lg:block" />
+                                    </Link>
+                                </Button>
+                            </>
                             )}
                             <Button
                                 size="icon"
@@ -89,4 +98,4 @@ const Navbar = () => {
     )
 };
 
-export default Navbar
+export default Navbar;

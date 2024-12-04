@@ -1,6 +1,6 @@
 "use client";
 
-import { useAppSelector } from "@/app/redux";
+import { useAppSelector } from "@/state/store";
 import Header from "@/components/Header";
 import ModalNewTask from "@/components/ModalNewTask";
 import TaskCard from "@/components/TaskCard";
