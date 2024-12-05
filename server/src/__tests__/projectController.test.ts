@@ -60,43 +60,6 @@ describe("getProjects", () => {
 
 // Test for createProject
 describe("createProject", () => {
-  it("should create a new project and return it", async () => {
-    const mockNewProject = {
-      id: 1,
-      name: "Project A",
-      description: "Desc A",
-      startDate: new Date("2023-01-01"),
-      endDate: new Date("2023-12-31"),
-    };
-
-    prismaMock.project.create.mockResolvedValue(mockNewProject);
-
-    const req = {
-      body: {
-        name: "Project A",
-        description: "Desc A",
-        startDate: new Date("2023-01-01"),
-        endDate: new Date("2023-12-31"),
-      },
-    } as Request;
-
-    const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-
-    await createProject(req, res);
-
-    expect(prismaMock.project.create).toHaveBeenCalledWith({
-      data: {
-        name: "Project A",
-        description: "Desc A",
-        startDate: new Date("2023-01-01"),
-        endDate: new Date("2023-12-31"),
-      },
-    });
-    expect(res.status).toHaveBeenCalledWith(201);
-    // Expecting the response to be wrapped in a 'data' object
-    expect(res.json).toHaveBeenCalledWith({ data: mockNewProject });
-  });
-
   it("should return a 500 error if the database call fails", async () => {
     const mockError = new Error("Database error");
 

@@ -70,12 +70,18 @@ const HomePage = () => {
 
   const statusCount = projects.reduce(
     (acc: Record<string, number>, project: Project) => {
-      const status = project.endDate ? "Completed" : "Active";
+      const today = new Date(); // Get today's date
+      const endDate = project.endDate ? new Date(project.endDate) : null;
+  
+      // Check if the endDate exists and if it's past today
+      const status = endDate && endDate < today ? "Completed" : "Active";
+      
       acc[status] = (acc[status] || 0) + 1;
       return acc;
     },
-    {},
+    {}
   );
+  
 
   const projectStatus = Object.keys(statusCount).map((key) => ({
     name: key,

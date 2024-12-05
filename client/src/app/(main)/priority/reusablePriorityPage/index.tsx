@@ -10,9 +10,12 @@ import {
   Task,
   useGetAuthUserQuery,
   useGetTasksByUserQuery,
+  useGetUsersQuery,
 } from "@/state/api";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   priority: Priority;
@@ -74,29 +77,47 @@ const columns: GridColDef[] = [
 ];
 
 const ReusablePriorityPage = ({ priority }: Props) => {
+  // State
   const [view, setView] = useState("list");
   const [isModalNewTaskOpen, setIsModalNewTaskOpen] = useState(false);
-
-  const { data: currentUser } = useGetAuthUserQuery();
-  console.log("user " + currentUser);
-  const userId = currentUser?.userDetails?.userId ?? null;
-  const {
-    data: tasks,
-    isLoading,
-    isError: isTasksError,
-  } = useGetTasksByUserQuery(userId || 0, {
-    skip: userId === null,
-  });
-  console.log("tasks " + tasks);
-
-
   const isDarkMode = useAppSelector((state) => state.global.isDarkMode);
 
-  const filteredTasks = tasks?.filter(
-    (task: Task) => task.priority === priority,
+  // Hooks
+  const { user } = useUser();
+  const { data: users, isLoading: isUsersLoading, isError: isUsersError } = useGetUsersQuery();
+
+  // Find the current user
+  const currentUser = user
+    ? users?.find((currentUser) => currentUser.email === user.emailAddresses[0]?.emailAddress)
+    : null;
+
+
+  const userId = currentUser?.userId;
+
+  // Tasks query
+  const { data: tasks, isLoading: isTasksLoading, isError: isTasksError } = useGetTasksByUserQuery(
+    userId || 0,
+    { skip: !userId }
   );
 
-  if (isTasksError || !tasks) return <div>Error fetching tasks</div>;
+  // Filter tasks based on priority
+  const filteredTasks = tasks?.filter((task: Task) => task.priority === priority);
+
+  // Render Conditions
+  if (isUsersLoading || !user) {
+    return <p className="dark:text-white">Loading user data...</p>;
+  }
+
+  if (isUsersError) {
+    return <div className="dark:text-white">Error loading user data</div>;
+  }
+
+  if (isTasksError) {
+    return <div className="dark:text-white">Error fetching tasks</div>;
+  }
+
+  // Now that we have `currentUser`, we can safely use it
+  console.log("user id " + userId);
 
   return (
     <div className="m-5 p-4">
@@ -107,33 +128,30 @@ const ReusablePriorityPage = ({ priority }: Props) => {
       <Header
         name="Priority Page"
         buttonComponent={
-          <button
-            className="mr-3 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+          <Button
             onClick={() => setIsModalNewTaskOpen(true)}
           >
             Add Task
-          </button>
+          </Button>
         }
       />
       <div className="mb-4 flex justify-start">
         <button
-          className={`px-4 py-2 ${
-            view === "list" ? "bg-gray-300" : "bg-white"
-          } rounded-l`}
+          className={`px-4 py-2 ${view === "list" ? "bg-gray-300" : "bg-white"
+            } rounded-l`}
           onClick={() => setView("list")}
         >
           List
         </button>
         <button
-          className={`px-4 py-2 ${
-            view === "table" ? "bg-gray-300" : "bg-white"
-          } rounded-l`}
+          className={`px-4 py-2 ${view === "table" ? "bg-gray-300" : "bg-white"
+            } rounded-l`}
           onClick={() => setView("table")}
         >
           Table
         </button>
       </div>
-      {isLoading ? (
+      {isTasksLoading  ? (
         <div>Loading tasks...</div>
       ) : view === "list" ? (
         <div className="grid grid-cols-1 gap-4">

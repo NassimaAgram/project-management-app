@@ -90,7 +90,7 @@ const customBaseQuery = async (
     prepareHeaders: async (headers) => {
       // Get Clerk token from the current session
       const token = await window.Clerk?.session?.getToken();
-      console.log("token :" + token)
+      console.log("token :" + token);
       console.log("Raw API token:", token);
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
@@ -141,7 +141,6 @@ const customBaseQuery = async (
   }
 };
 
-
 export const api = createApi({
   baseQuery: customBaseQuery, // Use the custom query with Clerk token
   reducerPath: "api",
@@ -162,45 +161,44 @@ export const api = createApi({
       transformResponse: (response) => {
         console.log("Raw API Response:", response); // Debugging
         return response || {}; // Return response or an empty object
-      }, 
-    }),    
+      },
+    }),
     getAuthUser: build.query<any, void>({
       queryFn: async (_, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
           if (typeof window === "undefined") {
             throw new Error("Client-side only logic");
           }
-    
+
           // Get the Clerk session and user details
           const session = await window.Clerk?.session?.getToken(); // Get session token
           if (!session) throw new Error("No session found");
-    
+
           const user = await window.Clerk?.user; // Get current user from Clerk
           if (!user) throw new Error("No user found");
-    
+
           // Extract only serializable data from the Clerk user object
           const userDetails = {
             id: user.id,
             username: user.username,
             email: user.emailAddresses[0]?.emailAddress,
           };
-    
+
           // Optionally, you can fetch additional user data from your API, if required
           const userId = user.id; // Get userId from Clerk user
-    
+
           // Fetch user details from your API, if necessary
           const userDetailsResponse = await fetchWithBQ(`users/${userId}`);
           const additionalUserDetails = userDetailsResponse.data as User;
-    
+
           console.log("Raw API Response:", userDetailsResponse); // Debugging
           // Merge Clerk data with API data (if required)
           return { data: { ...userDetails, additionalUserDetails } };
-    
         } catch (error: any) {
           return { error: error.message || "Could not fetch user data" };
         }
       },
-    }),    
+    }),
     getProjects: build.query<Project[], void>({
       query: () => "projects",
       providesTags: ["Projects"],
@@ -209,7 +207,7 @@ export const api = createApi({
         return response || []; // Ensure that you handle cases when `data` is undefined
       },
     }),
-    
+
     createProject: build.mutation<Project, Partial<Project>>({
       query: (project) => ({
         url: "projects",
@@ -233,17 +231,17 @@ export const api = createApi({
         return response || []; // Return empty array if no tasks
       },
     }),
-    
+
     getTasksByUser: build.query<Task[], number>({
       query: (userId) => `tasks/user/${userId}`,
       providesTags: (result, error, userId) =>
         result
           ? result.map(({ id }) => ({ type: "Tasks", id }))
           : [{ type: "Tasks", id: userId }],
-          transformResponse: (response) => {
-            console.log("Raw API Response:", response); // Debugging
-            return response || {}; // Return response or an empty object
-          },
+      transformResponse: (response) => {
+        console.log("Raw API priority Response:", response); // Debugging
+        return response || {}; // Return response or an empty object
+      },
     }),
     createTask: build.mutation<Task, Partial<Task>>({
       query: (task) => ({
@@ -274,7 +272,7 @@ export const api = createApi({
         console.log("Raw API Response:", response); // Debugging
         return response || []; // Return empty array if no users
       },
-    }),    
+    }),
     getTeams: build.query<Team[], void>({
       query: () => "teams",
       providesTags: ["Teams"],
@@ -282,14 +280,14 @@ export const api = createApi({
         console.log("Raw API Response:", response); // Debugging
         return response || []; // Return empty array if no teams
       },
-    }),    
+    }),
     search: build.query<SearchResults, string>({
       query: (query) => `search?query=${query}`,
       transformResponse: (response) => {
         console.log("Raw API Response:", response); // Debugging
         return response || { tasks: [], projects: [], users: [] }; // Default to empty arrays
       },
-    }),    
+    }),
   }),
 });
 

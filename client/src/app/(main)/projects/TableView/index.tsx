@@ -4,6 +4,7 @@ import { dataGridClassNames, dataGridSxStyles } from "@/lib/utils";
 import { useGetTasksQuery } from "@/state/api";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   id: string;
@@ -82,12 +83,11 @@ const TableView = ({ id, setIsModalNewTaskOpen }: Props) => {
         <Header
           name="Table"
           buttonComponent={
-            <button
-              className="flex items-center rounded bg-blue-primary px-3 py-2 text-white hover:bg-blue-600"
+            <Button
               onClick={() => setIsModalNewTaskOpen(true)}
             >
               Add Task
-            </button>
+            </Button>
           }
           isSmallText
         />

@@ -7,8 +7,8 @@ WORKDIR /app
 # Step 3: Copy package.json and install dependencies
 COPY package*.json ./
 
-# Install dependencies with improved network settings
-RUN npm install --legacy-peer-deps && npm cache clean --force
+# Install dependencies & clean the cache
+RUN npm install --legacy-peer-deps
 
 # Step 4: Copy the rest of the frontend code
 COPY . .

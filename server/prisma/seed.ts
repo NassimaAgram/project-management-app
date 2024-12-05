@@ -12,10 +12,18 @@ async function deleteAllData(orderedFileNames: string[]) {
   for (const modelName of modelNames) {
     const model: any = prisma[modelName as keyof typeof prisma];
     try {
-      await model.deleteMany({});
-      console.log(`Cleared data from ${modelName}`);
+      // Delete dependent tables first
+    await prisma.taskAssignment.deleteMany({});
+    await prisma.comment.deleteMany({});
+    await prisma.attachment.deleteMany({});
+    await prisma.task.deleteMany({});
+    await prisma.projectTeam.deleteMany({});
+    await prisma.project.deleteMany({});
+    await prisma.user.deleteMany({});
+    await prisma.team.deleteMany({});
+    console.log("All data cleared successfully.");
     } catch (error) {
-      console.error(`Error clearing data from ${modelName}:`, error);
+      console.error(`Error clearing data :`, error);
     }
   }
 }

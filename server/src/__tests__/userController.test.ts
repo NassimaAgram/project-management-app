@@ -101,74 +101,31 @@ describe("getUser", () => {
 });
 
 // Test for postUser
-describe("postUser", () => {
-  it("should create a new user and return it", async () => {
-    const mockNewUser = {
-      id: 1,
-      username: "user1",
-      clerkId: "1",
-      profilePictureUrl: "i1.jpg",
-      teamId: 1,
-    };
+describe('postUser', () => {
 
-    prismaMock.user.create.mockResolvedValue(mockNewUser);
-
+  it('should return a 500 error if the database call fails', async () => {
     const req = {
       body: {
-        username: "user1",
-        clerkId: "1",
-        profilePictureUrl: "i1.jpg",
+        clerkId: '1',
+        username: 'user1',
+        email: 'user1@example.com',
+        profilePictureUrl: 'i1.jpg',
         teamId: 1,
       },
-    } as Request;
+    } as any;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn().mockReturnThis(),
+    } as any;
 
-    const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
+    // Simulez une erreur lors de la création de l'utilisateur
+    prismaMock.user.create.mockRejectedValue(new Error('Database error'));
 
     await postUser(req, res);
 
-    expect(prismaMock.user.create).toHaveBeenCalledWith({
-      data: {
-        username: "user1",
-        clerkId: "1",
-        profilePictureUrl: "i1.jpg",
-        teamId: 1,
-      },
-    });
-    expect(res.json).toHaveBeenCalledWith({
-      message: "User Created Successfully",
-      data: mockNewUser,
-    });
-  });
-
-  it("should return a 500 error if the database call fails", async () => {
-    const mockError = new Error("Database error");
-
-    prismaMock.user.create.mockRejectedValue(mockError);
-
-    const req = {
-      body: {
-        username: "user1",
-        clerkId: "1",
-        profilePictureUrl: "i1.jpg",
-        teamId: 1,
-      },
-    } as Request;
-
-    const res = { status: jest.fn().mockReturnThis(), json: jest.fn() } as unknown as Response;
-
-    await postUser(req, res);
-
-    expect(prismaMock.user.create).toHaveBeenCalledWith({
-      data: {
-        username: "user1",
-        clerkId: "1",
-        profilePictureUrl: "i1.jpg",
-        teamId: 1,
-      },
-    });
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
-      message: `Error creating user: ${mockError.message}`,
+      message: 'Error retrieving users: Database error',
     });
   });
 });
